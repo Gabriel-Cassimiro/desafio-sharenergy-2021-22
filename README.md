@@ -46,7 +46,7 @@ A aplicação deve conter um objeto com os dados do arquivo [dadosUsina.json](da
 - "corrente_A" é a corrente elétrica em amperes
 - "potencia_kW" é a potência gerada em kilowatts
 - "temperatura_C" é a temperatura em graus Celsius
-   
+
 A aplicação deve plotar os dados em um gráfico de uma variável de interesse (tensão, corrente, potência ou temperatura) em função do tempo. A aplicação deve plotar apenas uma variável por vez no gráfico e possuir uma opção que permita o usuário escolher qual variável será mostrada. Para tanto, pode-se utilizar, por exemplo, uma lista suspensa ou um input radio.
 
 ### Demanda 2: gerenciamento de clientes (CRUD)
@@ -65,23 +65,25 @@ A aplicação deve possuir os recursos básicos de CRUD (Create, Read, Update, D
 
 ### Demanda 3: retorno financeiro dos clientes (raciocínio lógico)
 
-*A aplicação deve estimar o retorno financeiro obtido por cada cliente oriundo da energia produzida pela usina fotovoltaica no dia.*
+_A aplicação deve estimar o retorno financeiro obtido por cada cliente oriundo da energia produzida pela usina fotovoltaica no dia._
 
-*Considere como valor da energia elétrica: R\$0,95 / kWh*
+_Considere como valor da energia elétrica: R\$0,95 / kWh_
 
 Exemplo de como calcular:
 
-Primeiramente, a aplicação deve calcular a energia elétrica total produzida no dia utilizando as informações de potência em função do tempo disponíveis no objeto [dadosUsina.json](dadosUsina.json). Lembre-se que, fisicamente, a potência P (kW) é a derivada no tempo t (h) da energia E (kWh), P = dE/dt. Portanto, a energia gerada pode ser calculada a partir da potência por: 
-      
-   ![Equação para ΔE](equation.jpg)
+Primeiramente, a aplicação deve calcular a energia elétrica total produzida no dia utilizando as informações de potência em função do tempo disponíveis no objeto [dadosUsina.json](dadosUsina.json). Lembre-se que, fisicamente, a potência P (kW) é a derivada no tempo t (h) da energia E (kWh), P = dE/dt. Portanto, a energia gerada pode ser calculada a partir da potência por:
+
+![Equação para ΔE](equation.jpg)
+
    <!--
       Imagem gerada pelo site: http://www.sciweavers.org/free-online-latex-equation-editor
       Foi usado o comando LaTeX: " \Delta E = \int_{t_0}^{t_f}P(t)dt  \approx \Delta t  \sum_{i = 1}^{N-1} P(t_i) "
       Font: Arev (padrão), Font size: 12 (padrão)
    -->
-   Em que ΔE é a energia gerada (kWh), t<sub>0</sub> é o instante de tempo inicial (h), t<sub>f</sub> é o instante de tempo final (h), Δt é o intervalo de tempo em que os dados foram amostrados (h), i indica a posição do dado no registro (i = 1, ..., N) e N é o número total de dados amostrados.
 
-   Por exemplo, para os dados hipotéticos apresentados na tabela abaixo:
+Em que ΔE é a energia gerada (kWh), t<sub>0</sub> é o instante de tempo inicial (h), t<sub>f</sub> é o instante de tempo final (h), Δt é o intervalo de tempo em que os dados foram amostrados (h), i indica a posição do dado no registro (i = 1, ..., N) e N é o número total de dados amostrados.
+
+Por exemplo, para os dados hipotéticos apresentados na tabela abaixo:
 i | Tempo (h) | Potência (kW)
 :---: | :---: | :---:
 1 | 6,0 | 5,0
@@ -90,7 +92,7 @@ i | Tempo (h) | Potência (kW)
 4 | 21,0 | 0,0
 
 O intervalo de tempo de amostragem é: Δt = 11 h - 6h = 16 h - 11 h = 21 h - 16 h = 5 h. O número total de dados é: N = 4. E a energia gerada no dia é: ΔE = 5 h &times; (5 kW + 20 kW + 15 kW) = 5 h &times; 40 kW = 200 kWh.
-   
+
 De posse dos valores da energia gerada (ΔE) e do preço da energia elétrica, a receita total pode ser facilmente determinada. Por fim, o retorno de cada cliente pode ser calculado com base no percentual de participação de cada cliente em relação a usina. No caso dos dados de clientes fornecidos, essa informação está na chave "percentualUsina" do objeto [dadosClientes.json](dadosClientes.json).
 
 No exemplo anterior, como a usina produziu 200 kWh no dia, a receita total no dia é: 200 kWh &times; R\$0,95 / kWh = R\$190,00. Além disso, se dois clientes tiverem cada 50% de participação da usina, cada cliente terá um retorno de: (50 / 100) &times; R\$190,00 = R\$95,00.
@@ -111,21 +113,21 @@ A aplicação criada para o desafio pode ser aprimorada com recursos pensados po
   - Fornecer opções de filtragem ou busca para listar apenas parte dos clientes
 - Exibir estatística descritiva dos dados dos gráficos (por exemplo, média, desvio-padrão, mínimo, máximo, etc.)
 - Implementação de fórmula mais precisa de integração numérica para o cálculo de ΔE
-- Realizar validação dos dados 
+- Realizar validação dos dados
 
 ### Quais ferramentas posso utilizar para resolver o desafio?
 
-Com exceção do ReactJS, não será especificado um conjunto de ferramentas específico que pode ser usado. Não obstante, será considerado como um diferencial caso você adote as mesmas ferramentas com as quais nós trabalhamos. 
+Com exceção do ReactJS, não será especificado um conjunto de ferramentas específico que pode ser usado. Não obstante, será considerado como um diferencial caso você adote as mesmas ferramentas com as quais nós trabalhamos.
 
 ### Mas, afinal, quais ferramentas a Sharenergy utiliza?
 
-* Javascript, Typescript e Go
-* Framework para front-end: [React JS](https://pt-br.reactjs.org/) com roteamento [react-router-dom](https://www.npmjs.com/package/react-router-dom)
-* Para back-end: [Node.js](https://nodejs.org/en/) e [Go](https://golang.org/)
-* Banco de dados: [MongoDB](https://www.mongodb.com/) do lado do servidor e [Minimongo](https://guide.meteor.com/collections.html) do lado do cliente (cache)
-* Validação de dados: [Schema-utils](https://www.npmjs.com/package/schema-utils) 
-* UI: [CSS 3](https://www.w3.org/Style/CSS/), [Material-UI](https://material-ui.com/pt/) e [Reflexbox](https://rebassjs.org/reflexbox/)
-* Gráficos: [Recharts](https://recharts.org/en-US/)
+- Javascript, Typescript e Go
+- Framework para front-end: [React JS](https://pt-br.reactjs.org/) com roteamento [react-router-dom](https://www.npmjs.com/package/react-router-dom)
+- Para back-end: [Node.js](https://nodejs.org/en/) e [Go](https://golang.org/)
+- Banco de dados: [MongoDB](https://www.mongodb.com/) do lado do servidor e [Minimongo](https://guide.meteor.com/collections.html) do lado do cliente (cache)
+- Validação de dados: [Schema-utils](https://www.npmjs.com/package/schema-utils)
+- UI: [CSS 3](https://www.w3.org/Style/CSS/), [Material-UI](https://material-ui.com/pt/) e [Reflexbox](https://rebassjs.org/reflexbox/)
+- Gráficos: [Recharts](https://recharts.org/en-US/)
 
 ## O que devo entregar?
 
