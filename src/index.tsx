@@ -17,14 +17,14 @@ ReactDOM.render(
 		<CssBaseline />
 		<BrowserRouter>
 			<Switch>
-				<Route path={["/login", "/register"]}>
-					<ThemeProvider theme={theme}>
-						<Switch>
-							<Route path="/login" component={SignIn} />
-							<Route path="/register" component={Register} />
-						</Switch>
-					</ThemeProvider>
-				</Route>
+				<ThemeProvider theme={theme}>
+					<Route path="/login">
+						<SignIn />
+					</Route>
+					<Route path="/register">
+						<Register />
+					</Route>
+				</ThemeProvider>
 			</Switch>
 
 			<Route exact path="/">

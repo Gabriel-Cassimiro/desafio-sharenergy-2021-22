@@ -12,12 +12,12 @@ import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import Paper from "@mui/material/Paper"
 import IconButton from "@mui/material/IconButton"
-import OutlinedInput from "@mui/material/OutlinedInput"
-import InputLabel from "@mui/material/InputLabel"
 import InputAdornment from "@mui/material/InputAdornment"
-import FormControl from "@mui/material/FormControl"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
+import { SubmitHandler, useForm } from "react-hook-form"
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 import { Copyright } from "../Footer/Copyright"
 
@@ -36,6 +36,25 @@ interface ConfirmPassword {
 	weightRange: string
 	showPassword: boolean
 }
+
+type UserRegisterFormData = {
+	name: string
+	email: string
+	password: string
+	confirmPassword: string
+}
+
+const UserRegisterFormSchema = yup.object().shape({
+	name: yup.string().required("Digite seu nome"),
+	email: yup.string().email().required("Digite seu e-mail"),
+	password: yup
+		.string()
+		.required("Digite sua senha")
+		.min(6, "Senha deve conter no mínimo 6 caracteres"),
+	confirmPassword: yup
+		.string()
+		.oneOf([null, yup.ref("password")], "Senhas devem ser iguas")
+})
 
 export function Register() {
 	const [values, setValues] = React.useState<Password>({
@@ -82,17 +101,16 @@ export function Register() {
 		event.preventDefault()
 	}
 
-	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault()
-		const data = new FormData(event.currentTarget)
-		// eslint-disable-next-line no-console
-		console.log({
-			name: data.get("name"),
-			email: data.get("email"),
-			password: data.get("password"),
-			confirmPassword: data.get("confirmPassword")
-		})
-	}
+	const { register, handleSubmit, formState } = useForm({
+		resolver: yupResolver(UserRegisterFormSchema)
+	})
+
+	const { errors } = formState
+
+	const handleCreateUser: SubmitHandler<UserRegisterFormData> =
+		async values => {
+			await new Promise(resolve => setTimeout(resolve, 500))
+		}
 
 	const inputStyle = { WebkitBoxShadow: "0 0 0 1000px white inset" }
 
@@ -119,15 +137,17 @@ export function Register() {
 					<Box
 						component="form"
 						noValidate
-						onSubmit={handleSubmit}
+						onSubmit={handleSubmit(handleCreateUser)}
 						sx={{ mt: 3 }}
 					>
 						<Grid container spacing={2}>
 							<Grid item xs={12}>
 								<TextField
-									autoComplete="given-name"
-									name="name"
+									error={errors.name}
+									helperText={errors?.name?.message}
+									{...register("name")}
 									required
+									autoComplete="given-name"
 									fullWidth
 									id="name"
 									label="Nome"
@@ -136,28 +156,33 @@ export function Register() {
 							</Grid>
 							<Grid item xs={12}>
 								<TextField
+									error={errors.email}
+									helperText={errors?.email?.message}
+									{...register("email")}
 									required
 									fullWidth
 									id="email"
 									label="E-mail"
-									name="email"
 									autoComplete="email"
 									inputProps={{ style: inputStyle }}
 								/>
 							</Grid>
 							<Grid item xs={12}>
-								<FormControl variant="outlined" fullWidth sx={{ mt: 2 }}>
-									<InputLabel htmlFor="password">Senha</InputLabel>
-									<OutlinedInput
-										name="password"
-										label="Senha"
-										id="password"
-										required
-										inputProps={{ style: inputStyle }}
-										type={values.showPassword ? "text" : "password"}
-										value={values.password}
-										onChange={handleChangePassword("password")}
-										endAdornment={
+								<TextField
+									fullWidth
+									label="Senha"
+									id="password"
+									error={errors.password}
+									helperText={errors?.password?.message}
+									{...register("password")}
+									required
+									inputProps={{ style: inputStyle }}
+									type={values.showPassword ? "text" : "password"}
+									value={values.password}
+									onChange={handleChangePassword("password")}
+									sx={{ mt: 2 }}
+									InputProps={{
+										endAdornment: (
 											<InputAdornment position="end">
 												<IconButton
 													aria-label="toggle password visibility"
@@ -172,25 +197,26 @@ export function Register() {
 													)}
 												</IconButton>
 											</InputAdornment>
-										}
-									/>
-								</FormControl>
+										)
+									}}
+								/>
 							</Grid>
 							<Grid item xs={12}>
-								<FormControl variant="outlined" fullWidth sx={{ mt: 2 }}>
-									<InputLabel htmlFor="confirmPassword">
-										Confirme sua senha
-									</InputLabel>
-									<OutlinedInput
-										name="confirmPassword"
-										label="Confirme a senha"
-										id="confirmPassword"
-										inputProps={{ style: inputStyle }}
-										required
-										type={confirmValues.showPassword ? "text" : "password"}
-										value={confirmValues.confirmPassword}
-										onChange={handleChangeConfirm("confirmPassword")}
-										endAdornment={
+								<TextField
+									label="Confirme sua senha"
+									id="confirmPassword"
+									inputProps={{ style: inputStyle }}
+									error={errors.confirmPassword}
+									helperText={errors?.confirmPassword?.message}
+									{...register("confirmPassword")}
+									required
+									fullWidth
+									type={confirmValues.showPassword ? "text" : "password"}
+									value={confirmValues.confirmPassword}
+									onChange={handleChangeConfirm("confirmPassword")}
+									sx={{ mt: 2 }}
+									InputProps={{
+										endAdornment: (
 											<InputAdornment position="end">
 												<IconButton
 													aria-label="toggle password visibility"
@@ -205,9 +231,9 @@ export function Register() {
 													)}
 												</IconButton>
 											</InputAdornment>
-										}
-									/>
-								</FormControl>
+										)
+									}}
+								/>
 							</Grid>
 						</Grid>
 						<Button

@@ -13,13 +13,13 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import IconButton from "@mui/material/IconButton"
-import OutlinedInput from "@mui/material/OutlinedInput"
-import InputLabel from "@mui/material/InputLabel"
 import InputAdornment from "@mui/material/InputAdornment"
-import FormControl from "@mui/material/FormControl"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import Paper from "@mui/material/Paper"
+import { SubmitHandler, useForm } from "react-hook-form"
+import * as yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 import { Copyright } from "../Footer/Copyright"
 
@@ -30,6 +30,16 @@ interface State {
 	weightRange: string
 	showPassword: boolean
 }
+
+type SignInFormData = {
+	email: string
+	password: string
+}
+
+const signInFormSchema = yup.object().shape({
+	email: yup.string().required("Digite seu e-mail").email(),
+	password: yup.string().required("Digite sua senha")
+})
 
 export function SignIn() {
 	const [values, setValues] = React.useState<State>({
@@ -58,14 +68,14 @@ export function SignIn() {
 		event.preventDefault()
 	}
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		const data = new FormData(event.currentTarget)
-		// eslint-disable-next-line no-console
-		console.log({
-			email: data.get("email"),
-			password: data.get("password")
-		})
+	const { register, handleSubmit, formState } = useForm({
+		resolver: yupResolver(signInFormSchema)
+	})
+
+	const { errors } = formState
+
+	const hadleSignIn: SubmitHandler<SignInFormData> = async values => {
+		await new Promise(resolve => setTimeout(resolve, 500)) //2000 = 2segundos
 	}
 
 	const inputStyle = { WebkitBoxShadow: "0 0 0 1000px white inset" }
@@ -89,30 +99,41 @@ export function SignIn() {
 				<Typography component="h1" variant="h5">
 					Entrar
 				</Typography>
-				<Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+				<Box
+					component="form"
+					onSubmit={handleSubmit(hadleSignIn)}
+					noValidate
+					sx={{ mt: 1 }}
+				>
 					<TextField
 						margin="normal"
 						required
 						fullWidth
 						id="email"
 						label="E-mail"
-						name="email"
 						autoComplete="email"
 						autoFocus
 						inputProps={{ style: inputStyle }}
+						error={errors.email}
+						helperText={errors?.email?.message}
+						{...register("email")}
 					/>
-					<FormControl variant="outlined" fullWidth sx={{ mt: 2 }}>
-						<InputLabel htmlFor="password">Senha</InputLabel>
-						<OutlinedInput
-							inputProps={{ style: inputStyle }}
-							name="password"
-							label="Senha"
-							id="password"
-							required
-							type={values.showPassword ? "text" : "password"}
-							value={values.password}
-							onChange={handleChange("password")}
-							endAdornment={
+					<TextField
+						fullWidth
+						sx={{ mt: 2 }}
+						label="Senha"
+						id="password"
+						autoComplete="password"
+						error={errors.password}
+						helperText={errors?.password?.message}
+						{...register("password")}
+						required
+						type={values.showPassword ? "text" : "password"}
+						value={values.password}
+						onChange={handleChange("password")}
+						inputProps={{ style: inputStyle }}
+						InputProps={{
+							endAdornment: (
 								<InputAdornment position="end">
 									<IconButton
 										aria-label="toggle password visibility"
@@ -123,17 +144,15 @@ export function SignIn() {
 										{values.showPassword ? <VisibilityOff /> : <Visibility />}
 									</IconButton>
 								</InputAdornment>
-							}
-						/>
-					</FormControl>
+							)
+						}}
+					/>
 					<FormControlLabel
 						control={<Checkbox value="remember" color="primary" />}
 						label="Lembre-se de mim"
 					/>
 					<Button
-						component={RouterLink}
 						type="submit"
-						to="/"
 						fullWidth
 						variant="contained"
 						sx={{ mt: 3, mb: 2 }}

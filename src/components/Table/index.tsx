@@ -80,8 +80,16 @@ export function Table({ rows }: TableProps) {
 				variant="outlined"
 				color="secondary"
 				startIcon={<PersonAdd />}
+				sx={{
+					display: "flex",
+					width: "50%",
+					marginLeft: "auto",
+					marginTop: "1rem",
+					marginRight: "auto",
+					marginBottom: "1rem"
+				}}
 			>
-				New User
+				Novo Cliente
 			</Button>
 			<DataGrid
 				rows={data}

@@ -77,15 +77,15 @@ export function AlertDialog({ id, handleDelete }: AlertDialogProps) {
 				maxWidth="xl"
 			>
 				<DialogTitle id="alert-dialog-title">
-					{"Are you sure you want to delete this user?"}
+					{"Tem certeza de que deseja excluir o registro definitivamente?"}
 				</DialogTitle>
 				<DialogContent>
 					<DialogContentText id="alert-dialog-description">
-						You can't undo this operation
+						Você não pode desfazer essa operação
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose}>No</Button>
+					<Button onClick={handleClose}>Não</Button>
 					<Button
 						onClick={() => {
 							handleDelete(id)
@@ -93,7 +93,7 @@ export function AlertDialog({ id, handleDelete }: AlertDialogProps) {
 						}}
 						autoFocus
 					>
-						Yes
+						Sim
 					</Button>
 				</DialogActions>
 			</Dialog>
