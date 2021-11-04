@@ -7,7 +7,8 @@ import {
 	Label,
 	ResponsiveContainer,
 	Tooltip,
-	CartesianGrid
+	CartesianGrid,
+	Legend
 } from "recharts"
 
 import { DataInterface } from "../Pages/Dashboard"
@@ -18,8 +19,22 @@ interface ChartProps {
 	dataKey: string
 }
 
+interface LegendName extends Record<string, any> {
+	potencia_kW: string
+	corrente_A: string
+	tensao_V: string
+	temperatura_C: string
+}
+
 export function Chart({ Data, dataKey }: ChartProps) {
 	const theme = useTheme()
+
+	const legendName: LegendName = {
+		temperatura_C: "Temperatura (°C)",
+		tensao_V: "Tensão (∆V)",
+		corrente_A: "Corrente (A)",
+		potencia_kW: "Potência (kW)"
+	}
 
 	return (
 		<ResponsiveContainer width="100%" aspect={4 / 1}>
@@ -44,23 +59,14 @@ export function Chart({ Data, dataKey }: ChartProps) {
 						Horário
 					</Label>
 				</XAxis>
-				<YAxis stroke={theme.palette.text.secondary}>
-					<Label
-						angle={270}
-						position="left"
-						style={{
-							textAnchor: "middle",
-							fill: theme.palette.text.primary,
-							...theme.typography.body1
-						}}
-					>
-						Valor
-					</Label>
-				</YAxis>
+				<YAxis stroke={theme.palette.text.secondary}></YAxis>
 				<Tooltip content={<CustomTooltip />} />
-				<CartesianGrid opacity={0.1} vertical={false} />
+				<Legend verticalAlign="top" height={56} />
+
+				<CartesianGrid opacity={0.8} vertical={false} />
 				<Line
 					isAnimationActive={false}
+					name={legendName[dataKey]}
 					type="monotone"
 					dataKey={dataKey}
 					stroke={theme.palette.primary.main}

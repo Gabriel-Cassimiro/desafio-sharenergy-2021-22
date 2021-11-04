@@ -19,7 +19,6 @@ export function SelectChart({ dataKey, setDataKey }: SelectChartInterface) {
 		<Box
 			sx={{
 				minWidth: 120,
-				mb: "2rem",
 				display: "flex",
 				flexDirection: "row",
 				justifyContent: "end"
