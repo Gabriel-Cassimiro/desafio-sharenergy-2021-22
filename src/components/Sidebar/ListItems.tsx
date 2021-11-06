@@ -52,7 +52,7 @@ export function ListItems() {
 				<ListItemIcon sx={{ color: "inherit" }}>
 					<PersonAdd />
 				</ListItemIcon>
-				<ListItemText primary="Relatórios" />
+				<ListItemText primary="Adicionar" />
 			</ListItemButton>
 		</List>
 	)

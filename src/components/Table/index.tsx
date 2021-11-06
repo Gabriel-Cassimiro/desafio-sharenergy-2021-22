@@ -12,29 +12,35 @@ interface TableProps {
 		name: string
 		usinaId: number[]
 		percentualDeParticipacao: number[]
+		profit: number[]
 	}[]
 }
 
 export function Table({ rows }: TableProps) {
 	const [data, setData] = useState(rows)
+	const [pageSize, setPageSize] = React.useState<number>(10)
 
 	function handleDelete(id: number) {
 		setData(data.filter(item => item.id !== id))
 	}
 
 	const columns: GridColDef[] = [
-		{ field: "id", headerName: "ID", width: 90 },
+		{ field: "id", headerName: "ID", width: 100 },
 		{
 			field: "name",
-			headerName: "Client",
-			width: 200,
+			headerName: "Cliente",
+			width: 400,
+			headerAlign: "center",
+			align: "center",
 			editable: true
 		},
 		{
 			field: "usinaId",
 			headerName: "Número da usina",
 			type: "number",
-			width: 200,
+			width: 400,
+			headerAlign: "center",
+			align: "center",
 			editable: true
 		},
 		{
@@ -42,12 +48,23 @@ export function Table({ rows }: TableProps) {
 			headerName: "Percentual de Participação (%)",
 			type: "number",
 			width: 400,
+			headerAlign: "center",
+			align: "center",
 			editable: true
 		},
 		{
+			field: "profit",
+			headerName: "Retorno (R$)",
+			width: 300,
+			headerAlign: "center",
+			align: "center"
+		},
+		{
 			field: "action",
-			headerName: "Action",
-			width: 200,
+			headerName: "Ação",
+			headerAlign: "center",
+			align: "center",
+			width: 300,
 			renderCell: params => {
 				return (
 					<>
@@ -63,7 +80,7 @@ export function Table({ rows }: TableProps) {
 								color: "#fff"
 							}}
 						>
-							Edit
+							Editar
 						</Button>
 						<AlertDialog handleDelete={handleDelete} id={params.row.id} />
 					</>
@@ -95,11 +112,12 @@ export function Table({ rows }: TableProps) {
 				rows={data}
 				columns={columns}
 				autoHeight
-				autoPageSize
-				pageSize={20}
-				rowsPerPageOptions={[20]}
-				checkboxSelection
-				disableSelectionOnClick
+				pagination
+				pageSize={pageSize}
+				onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+				rowsPerPageOptions={[10, 25, 50, 75, 100]}
+				checkboxSelection={true}
+				disableSelectionOnClick={true}
 			/>
 		</Box>
 	)

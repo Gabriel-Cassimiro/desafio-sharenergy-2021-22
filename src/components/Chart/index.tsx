@@ -11,7 +11,7 @@ import {
 	Legend
 } from "recharts"
 
-import { DataInterface } from "../Pages/Dashboard"
+import { DataInterface } from "../../context/DataContext"
 import { CustomTooltip } from "./CustomTooltip"
 
 interface ChartProps {
